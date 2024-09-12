@@ -16,9 +16,12 @@ let score = 0;
 let round = 1;
 let rolls = 0;
 
+//when Roll the Dice button is clicked, this function will provide 5 random values on the boxes
 const rollDice = () => {
   diceValuesArr = [];
 
+  //my code:
+  //diceValuesArr = Array.from( {length: 5}, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => a-b);
   for (let i = 0; i < 5; i++) {
     const randomDice = Math.floor(Math.random() * 6) + 1;
     diceValuesArr.push(randomDice);
@@ -34,12 +37,14 @@ const updateStats = () => {
   roundElement.textContent = round;
 };
 
+//Step 6
 const updateRadioOption = (index, score) => {
   scoreInputs[index].disabled = false;
-  scoreInputs[index].value = score;
+  scoreInputs[index].value = score;       //previous value name is replaced by the score
   scoreSpans[index].textContent = `, score = ${score}`;
 };
 
+//selectedValue is the score of the selected radio button, achieved is the id of the selected radio button
 const updateScore = (selectedValue, achieved) => {
   score += parseInt(selectedValue);
   totalScoreElement.textContent = score;
@@ -47,9 +52,34 @@ const updateScore = (selectedValue, achieved) => {
   scoreHistory.innerHTML += `<li>${achieved} : ${selectedValue}</li>`;
 };
 
+//Step 7
 const getHighestDuplicates = (arr) => {
   const counts = {};
 
+  /*
+  //my code
+  //counts occurences and total score
+  arr.forEach((el) => {
+    counts[el] = (counts[el] || 0) + 1;
+    score += el;
+  })
+
+  const maxCount = Math.max(...Object.values(counts));  //Object.values(counts) returns an array then the ... spreads the array in individual arguments
+
+   if (maxCount >= 4) {
+      //four of a kind
+      updateRadioOption(1, score);  //update four of a kind
+      updateRadioOption(0, score);  //also update three of a kind
+   } else if (maxCount === 3) {
+      updateRadioOption(0, score);  //update three of a kind
+      //don't update for of a kind
+   }
+
+   //if maxCount < 3 no updates on options
+
+   //always update final option
+   updateRadioOption(5, 0);
+   */
   for (const num of arr) {
     if (counts[num]) {
       counts[num]++;
@@ -86,6 +116,17 @@ const getHighestDuplicates = (arr) => {
 const detectFullHouse = (arr) => {
   const counts = {};
 
+  /*
+  //my code:
+  arr.forEach((el) => {
+    counts[el] = (counts[el] || 0) + 1;
+  });
+
+  const values = Object.values(counts);   //returns an array of the values of object counts
+  if (values.includes(3) && values.includes(2)) {
+    updateRadioOption(2, 25);
+  }
+*/
   for (const num of arr) {
     counts[num] = counts[num] ? counts[num] + 1 : 1;
   }
@@ -100,7 +141,19 @@ const detectFullHouse = (arr) => {
   updateRadioOption(5, 0);
 };
 
+//Step 8
 const resetRadioOptions = () => {
+  /*
+  //my code:
+  for (const i of scoreInputs) {
+    i.disabled = true;
+    i.checked = false;
+  }
+
+  for (const i of scoreSpans) {
+    i.textContent = "";
+  }
+*/
   scoreInputs.forEach((input) => {
     input.disabled = true;
     input.checked = false;
@@ -117,6 +170,12 @@ const resetGame = () => {
   round = 1;
   rolls = 0;
 
+  /*
+  //my code:
+  for (const if of listOfAllDice) {
+    i.textContent = 0;
+  }
+  */
   listOfAllDice.forEach((dice, index) => {
     dice.textContent = diceValuesArr[index];
   });
@@ -137,12 +196,13 @@ const checkForStraights = (arr) => {
   // Check for large straight
   if (uniqueSorted.length === 5 && uniqueSorted[4] - uniqueSorted[0] === 4) {
     updateRadioOption(4, 40); // Large straight
-    updateRadioOption(3, 30); // Large straight
+    updateRadioOption(3, 30); // also small straight
   }
   
   // Check for small straight
+  //checks the first four values if small straight [i = 0], if not, move to next four [i = 1]
   for (let i = 0; i <= uniqueSorted.length - 4; i++) {
-    if (uniqueSorted[i + 3] - uniqueSorted[i] === 3) {
+    if (uniqueSorted[i + 3] - uniqueSorted[i] === 3) {  //checks if the difference of the fourth value and first value is 3
       updateRadioOption(3, 30); // Small straight
     }
   }
@@ -181,6 +241,21 @@ keepScoreBtn.addEventListener("click", () => {
   let selectedValue;
   let achieved;
 
+  /*
+  //my code:
+  for (const i of scoreInputs) {
+    if (i.checked) {
+      selectedValue = i.value;
+      achieved = i.id;
+
+      updateScore(selectedValue, achieved);
+      resetRadioOptions();
+      break;
+    }
+    
+  }
+  alert("Please select an option or roll the dice");
+  */
   for (const radioButton of scoreInputs) {
     if (radioButton.checked) {
       selectedValue = radioButton.value;
